@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube www</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22red%22/></svg>">
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root { --red: #ff0000; --bg: #000; --side: #111; }
+        * { box-sizing: border-box; }
+        body, html { 
+            margin: 0; padding: 0; height: 100%; width: 100%; 
+            background: var(--bg); color: white; 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            overflow: hidden; 
+        }
+
+        #app { display: flex; height: 100vh; width: 100vw; }
+
+        /* LECTEUR (GAUCHE) */
+        #video-section { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        header { height: 60px; background: #111; display: flex; align-items: center; padding: 0 15px; gap: 10px; border-bottom: 1px solid #333; }
+        #ytUrl { flex: 1; padding: 10px; background: #000; border: 1px solid #444; color: white; border-radius: 4px; outline: none; }
+        
+        #player-wrapper { 
+            flex: 1; display: flex; align-items: center; justify-content: center; 
+            padding: 20px; background: #000; 
+        }
+
+        /* TAILLE MAGIQUE : Ne dépasse jamais l'écran */
+        .video-box {
+            width: 100%;
+            max-width: calc((100vh - 140px) * 1.77); 
+            aspect-ratio: 16 / 9;
+            background: #111;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+        #player { position: absolute; top:0; left:0; width: 100% !important; height: 100% !important; border: none; }
+
+        /* SIDEBAR (DROITE) */
+        #sidebar { width: 340px; background: var(--side); border-left: 1px solid #222; display: flex; flex-direction: column; flex-shrink: 0; }
+        #info-bar { padding: 12px; background: var(--red); font-weight: bold; text-align: center; font-size: 0.8rem; }
+        #messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        
+        .msg-item { background: #222; padding: 10px; border-radius: 6px; border-left: 3px solid var(--red); }
+        .msg-item b { color: var(--red); font-size: 0.75rem; display: block; margin-bottom: 3px; }
+        .msg-item span { font-size: 0.95rem; line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
+
+        #footer { padding: 10px; background: #000; display: flex; gap: 8px; }
+        #msgIn { flex: 1; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 4px; outline: none; }
+        .btn { background: var(--red); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="video-section">
+        <header>
+            <input type="text" id="ytUrl" placeholder="URL YouTube...">
+            <button class="btn" onclick="changeVideo()">GO</button>
+        </header>
+        <div id="player-wrapper">
+            <div class="video-box"><div id="player"></div></div>
+        </div>
+    </div>
+    <div id="sidebar">
+        <div id="info-bar"><span id="uCount">0</span> CONNECTÉS | <span id="pseudo">...</span></div>
+        <div id="messages"></div>
+        <div id="footer">
+            <input type="text" id="msgIn" placeholder="Message..." onkeypress="if(event.key==='Enter') sendMsg()">
+            <button class="btn" onclick="sendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Pseudo
+    let myName = localStorage.getItem('partyName') || prompt("Pseudo :") || "User";
+    localStorage.setItem('partyName', myName);
+    document.getElementById('pseudo').innerText = myName;
+
+    // 2. API YT
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    const socket = io();
+    let player, isReady = false, lastVid = "", isSyncing = false;
+
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            videoId: 'dQw4w9WgXcQ',
+            playerVars: { 'autoplay': 1, 'controls': 1, 'rel': 0, 'origin': window.location.origin },
+            events: {
+                'onReady': () => { isReady = true; setTimeout(() => window.dispatchEvent(new Event('resize')), 800); },
+                'onStateChange': (e) => {
+                    if (!isSyncing && isReady && (e.data === 1 || e.data === 2)) {
+                        socket.emit('update_video', { playback: e.data, time: player.getCurrentTime() });
+                    }
+                }
+            }
+        });
+    }
+
+    // 3. Logique Vidéo
+    socket.on('sync_video', (data) => {
+        if (!isReady || !player || !player.loadVideoById) return;
+        isSyncing = true;
+        if (data.id && data.id !== lastVid) {
+            player.loadVideoById(data.id, data.time);
+            lastVid = data.id;
+        }
+        if (Math.abs(player.getCurrentTime() - data.time) > 3) player.seekTo(data.time, true);
+        if (data.playback === 1) player.playVideo();
+        if (data.playback === 2) player.pauseVideo();
+        setTimeout(() => isSyncing = false, 800);
+    });
+
+    function changeVideo() {
+        const val = document.getElementById('ytUrl').value.trim();
+        let id = val.includes('v=') ? val.split('v=')[1].split('&')[0] : val.split('/').pop();
+        if (id.length === 11) socket.emit('update_video', { id: id, time: 0, playback: 1 });
+    }
+
+    // 4. Logique Chat Sécurisée
+    function addMsg(m) {
+        const box = document.getElementById('messages');
+        const div = document.createElement('div');
+        div.className = 'msg-item';
+        
+        // Sécurité : .textContent traite tout comme du texte brut (pas de HTML)
+        const b = document.createElement('b');
+        b.textContent = m.user;
+        const span = document.createElement('span');
+        span.textContent = m.text;
+        
+        div.appendChild(b);
+        div.appendChild(span);
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function sendMsg() {
+        const i = document.getElementById('msgIn');
+        if(i.value.trim()) {
+            socket.emit('send_msg', { user: myName, text: i.value });
+            i.value = "";
+        }
+    }
+
+    socket.on('receive_msg', (d) => addMsg(d));
+    socket.on('history', (h) => h.forEach(addMsg));
+    socket.on('users', (c) => document.getElementById('uCount').innerText = c);
+</script>
+</body>
+</html>

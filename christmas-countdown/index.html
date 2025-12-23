@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Christmas Countdown 🎄</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/christmas-countdown/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❄️</text></svg>">
+</head>
+<body>
+
+<canvas id="snow"></canvas>
+
+<div class="container">
+    <h1>🎄 Noël arrive dans</h1>
+
+    <div class="timer">
+        <div class="time-box">
+            <span id="days">0</span>
+            <small>jours</small>
+        </div>
+        <div class="time-box">
+            <span id="hours">0</span>
+            <small>heures</small>
+        </div>
+        <div class="time-box">
+            <span id="minutes">0</span>
+            <small>minutes</small>
+        </div>
+        <div class="time-box">
+            <span id="seconds">0</span>
+            <small>secondes</small>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ===== COUNTDOWN ===== */
+const target = new Date(new Date().getFullYear(), 11, 25, 0, 0, 0);
+
+function updateCountdown() {
+    const now = new Date();
+    const diff = target - now;
+
+    if (diff <= 0) {
+        document.querySelector(".container").innerHTML =
+            "<h1>🎁 Joyeux Noël 🎁</h1>";
+        return;
+    }
+
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const m = Math.floor((diff / (1000 * 60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+
+    days.textContent = d;
+    hours.textContent = h;
+    minutes.textContent = m;
+    seconds.textContent = s;
+}
+
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+/* ===== SNOW ===== */
+const canvas = document.getElementById("snow");
+const ctx = canvas.getContext("2d");
+
+let w, h;
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+const flakes = Array.from({ length: 150 }, () => ({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    r: Math.random() * 3 + 1,
+    s: Math.random() * 1 + 0.5
+}));
+
+function snow() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "white";
+
+    flakes.forEach(f => {
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        f.y += f.s;
+        if (f.y > h) {
+            f.y = -5;
+            f.x = Math.random() * w;
+        }
+    });
+
+    requestAnimationFrame(snow);
+}
+
+snow();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Costa Fascinosa Countdown</title>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+        color: white;
+        background: url('https://upload.wikimedia.org/wikipedia/commons/f/f5/Costa_Fascinosa_2022_in_Kiel.jpg') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+    }
+
+    #countdown-container {
+        text-align: center;
+        background: rgba(0,0,0,0.5);
+        padding: 30px 20px;
+        border-radius: 15px;
+        margin: 40px auto 20px auto;
+        max-width: 600px;
+    }
+
+    .timer {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .time-box {
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 10px;
+        min-width: 80px;
+    }
+
+    .time-box span {
+        display: block;
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    .time-box small {
+        display: block;
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
+
+    button {
+        padding: 12px 20px;
+        font-size: 1em;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background: linear-gradient(to right, #00f260, #0575e6);
+        color: white;
+    }
+
+    #itinerary {
+        display: none;
+        max-width: 800px;
+        margin: 20px auto;
+        background: rgba(0,0,0,0.6);
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    #itinerary img {
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 10px;
+    }
+
+    h1, h2 {
+        margin: 10px 0;
+    }
+
+    p {
+        margin: 5px 0;
+    }
+</style>
+</head>
+<body>
+
+<div id="countdown-container">
+    <h1>Embarquement dans</h1>
+    <div class="timer">
+        <div class="time-box">
+            <span id="days">0</span>
+            <small>jours</small>
+        </div>
+        <div class="time-box">
+            <span id="hours">0</span>
+            <small>heures</small>
+        </div>
+        <div class="time-box">
+            <span id="minutes">0</span>
+            <small>minutes</small>
+        </div>
+        <div class="time-box">
+            <span id="seconds">0</span>
+            <small>secondes</small>
+        </div>
+    </div>
+    <button onclick="toggleItinerary()">Voir l'itinéraire</button>
+</div>
+
+<div id="itinerary">
+    <h2>Votre itinéraire jour après jour</h2>
+    <p>Embarquement: ven. 15 mai 19:30</p>
+    <p>Barcelone : Départ 19:30</p>
+    <p>Jour 2 - Marseille : Arrivée 09:00, Départ 17:00</p>
+    <p>Jour 3 - Savone : Arrivée 08:00, Départ 16:30</p>
+    <p>Jour 4 - Rome / Civitavecchia : Arrivée 07:00, Départ 18:00</p>
+    <p>Jour 5 - Catane : Arrivée 14:30, Départ 20:00</p>
+    <p>Jour 6 - En navigation</p>
+    <p>Jour 7 - Athènes : Arrivée 08:00, Départ 18:00</p>
+    <p>Jour 8 - Crète : Arrivée 08:00, Départ 18:00</p>
+    <p>Jour 9 - Mykonos : Arrivée 08:00, Départ 23:59</p>
+    <p>Jour 10 - Santorin : Arrivée 08:00, Départ 18:00</p>
+    <p>Jour 11 - En navigation</p>
+    <p>Jour 12 - La Valette : Arrivée 08:00, Départ 17:00</p>
+    <p>Jour 13 - En navigation</p>
+    <p>Jour 14 - Ibiza : Arrivée 11:30, Départ 20:00</p>
+    <p>Débarquement - Barcelone : Arrivée 08:00</p>
+    <img src="https://www.costacroisieres.fr/map/itineraries/BCN14129/images/fr_FR_BCN14129_landscape_sd_1x.jpg" alt="Carte du voyage">
+</div>
+
+<script>
+    // Countdown
+    const targetDate = new Date('May 15, 2026 19:30:00'); // Remplace par l'année voulue
+
+    function updateCountdown() {
+        const now = new Date();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+            document.getElementById('days').textContent = 0;
+            document.getElementById('hours').textContent = 0;
+            document.getElementById('minutes').textContent = 0;
+            document.getElementById('seconds').textContent = 0;
+            return;
+        }
+
+        const days = Math.floor(diff / (1000*60*60*24));
+        const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+        const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+        const seconds = Math.floor((diff % (1000*60)) / 1000);
+
+        document.getElementById('days').textContent = days;
+        document.getElementById('hours').textContent = hours;
+        document.getElementById('minutes').textContent = minutes;
+        document.getElementById('seconds').textContent = seconds;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Toggle itinerary
+    function toggleItinerary() {
+        const itin = document.getElementById('itinerary');
+        if (itin.style.display === 'block') {
+            itin.style.display = 'none';
+        } else {
+            itin.style.display = 'block';
+            itin.scrollIntoView({behavior: 'smooth'});
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Phrases - RicWorld</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🎲</text></svg>">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            background: #0a0a0a; color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        nav {
+            height: 60px; background: #111; display: flex; align-items: center;
+            padding: 0 20px; border-bottom: 2px solid red; position: fixed; top: 0; width: 100%; z-index: 100;
+        }
+        .nav-logo { color: white; text-decoration: none; font-weight: bold; font-size: 1.5rem; }
+
+        main {
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; height: 100vh; padding-top: 60px;
+            text-align: center; padding: 20px;
+        }
+
+        #phrase-display {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #fff;
+            max-width: 1000px;
+            margin-bottom: 50px;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
+            line-height: 1.1;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* BOUTON SHUFFLE */
+        .btn-shuffle {
+            background: white;
+            color: black;
+            border: none;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 2.5rem;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-shuffle:hover {
+            transform: scale(1.1) rotate(180deg);
+            background: #ff0000;
+            color: white;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
+        }
+
+        .btn-shuffle:active {
+            transform: scale(0.9);
+        }
+
+        /* Animation de texte */
+        .fade { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/" class="nav-logo">RicWorld</a>
+    </nav>
+
+    <main>
+        <div id="phrase-display">Chargement...</div>
+
+        <button class="btn-shuffle" onclick="generatePhrase()" title="Mélanger">
+            <i class="fa-solid fa-shuffle"></i>
+        </button>
+    </main>
+
+    <script>
+        let wordBank = null;
+        const display = document.getElementById('phrase-display');
+
+        // 1. Charger le fichier JSON
+        async function loadWords() {
+            try {
+                const response = await fetch('words.json');
+                wordBank = await response.json();
+                generatePhrase(); // Génère une première phrase
+            } catch (error) {
+                display.innerText = "Erreur : Impossible de charger words.json";
+                display.style.fontSize = "1.5rem";
+            }
+        }
+
+        // 2. Choisir un mot au hasard
+        function getRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // 3. Fabriquer la phrase
+        function generatePhrase() {
+            if (!wordBank) return;
+
+            const s = getRandom(wordBank.sujets);
+            const v = getRandom(wordBank.verbes);
+            const c = getRandom(wordBank.complements);
+
+            const phrase = `${s} ${v} ${c}.`;
+            
+            // Animation
+            display.classList.remove('fade');
+            void display.offsetWidth; // Reset animation
+            display.innerText = phrase;
+            display.classList.add('fade');
+        }
+
+        // Initialisation
+        loadWords();
+    </script>
+</body>
+</html>

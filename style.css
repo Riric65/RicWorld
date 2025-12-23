@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&display=swap');
+
+:root {
+    --primary: #00f260;
+    --secondary: #0575e6;
+    --bg-dark: #0f0c29;
+    --glass: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: white;
+    overflow-x: hidden;
+}
+
+/* --- NAVBAR (Barre du haut) --- */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: rgba(15, 12, 41, 0.8);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    width: 90%;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+    font-weight: 800;
+    font-size: 1.5em;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: #ccc;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+/* --- USER PROFILE (Compte) --- */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 5px 15px;
+    background: var(--glass);
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    transition: 0.3s;
+}
+
+.user-profile:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+/* --- SECTIONS --- */
+section {
+    padding: 100px 10%;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* HERO (Accueil) */
+#home {
+    background: radial-gradient(circle at center, #24243e 0%, #0f0c29 70%);
+    text-align: center;
+    padding-top: 150px;
+}
+
+h1 { font-size: 4em; margin-bottom: 10px; }
+h2 { font-size: 2.5em; margin-bottom: 30px; color: var(--primary); }
+p { font-size: 1.2em; line-height: 1.6; color: #bbb; max-width: 800px; margin: 0 auto; }
+
+/* PROJECTS GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.card {
+    background: var(--glass);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    transition: 0.3s;
+    text-decoration: none;
+    color: white;
+}
+
+.card:hover { transform: translateY(-10px); border-color: var(--secondary); }
+.card i { font-size: 2.5em; color: var(--primary); margin-bottom: 20px; }
+.card h3 { margin: 10px 0; }
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 50px;
+    border-top: 1px solid var(--border);
+    color: #666;
+}
