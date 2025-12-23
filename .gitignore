@@ -30,3 +30,5 @@ Thumbs.db
 
 # Nginx / system (au cas où)
 *.pid
+
+/dashboard
