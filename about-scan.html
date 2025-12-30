@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>À propos du scanner RicWorld</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&display=swap">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&display=swap');
+
+:root {
+    --primary: #00f260;
+    --secondary: #0575e6;
+    --bg-dark: #0f0c29;
+    --glass: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: white;
+    overflow-x: hidden;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background: rgba(15, 12, 41, 0.8);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    width: 90%;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+    font-weight: 800;
+    font-size: 1.5em;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: #ccc;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+section {
+    padding: 100px 10%;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1 { font-size: 4em; margin-bottom: 10px; }
+h2 { font-size: 2.5em; margin-bottom: 30px; color: var(--primary); }
+p { font-size: 1.2em; line-height: 1.6; color: #bbb; max-width: 800px; margin: 0 auto; }
+
+footer {
+    text-align: center;
+    padding: 50px;
+    border-top: 1px solid var(--border);
+    color: #666;
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="nav-logo">RicWorld</a>
+    <div class="nav-links">
+        <a href="#about">À propos du scanner</a>
+        <a href="#scanner">Comment fonctionne le scanner</a>
+        <a href="#contact">Contact</a>
+    </div>
+</nav>
+
+<section id="about">
+    <h1>À propos du Scanner RicWorld</h1>
+    <p>Le scanner RicWorld est un outil léger et transparent destiné à analyser les sites web de manière non intrusive. Son objectif principal est de détecter les bots et de vérifier certaines informations publiques d’un site pour améliorer sa sécurité et sa compatibilité.</p>
+</section>
+
+<section id="scanner">
+    <h2>Fonctionnement</h2>
+    <p>Notre scanner effectue uniquement des requêtes publiques et sécurisées : vérification de l’existence de pages, lecture de robots.txt, identification du serveur et des headers HTTP. Aucune donnée sensible n’est récupérée, et aucun test intrusif n’est réalisé.</p>
+    <p>Il est conçu pour être visible et identifiable par les administrateurs via le User-Agent officiel :</p>
+    <code>RicWorldScan/1.0 (+https://ricworld.duckdns.org/about-scan; contact: RicWorld-support@protonmail.com)</code>
+</section>
+
+<section id="contact">
+    <h2>Contact & Opt-Out</h2>
+    <p>Si vous êtes administrateur et souhaitez que votre site ne soit pas scanné par RicWorld, veuillez contacter :</p>
+    <p><strong>Email :</strong> RicWorld-support@protonmail.com</p>
+    <p>Nous nous engageons à respecter votre demande immédiatement et à mettre à jour nos listes.</p>
+</section>
+
+<footer>
+    &copy; 2025 RicWorld. Tous droits réservés.
+</footer>
+
+</body>
+</html>
